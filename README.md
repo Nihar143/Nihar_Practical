@@ -43,7 +43,7 @@ This is an iOS application built as part of a practical assignment. The app disp
 - **Dark Mode:** We explicitly disabled Dark Mode (`overrideUserInterfaceStyle = .light`) and skipped its implementation. Why? Without explicit color semantics and assets provided for a dark theme, forcing light mode ensures the UI matches the intended design perfectly without unpredictable color inversions.
 
 ## Time Spent
-- **Total Time:** Approximately 6 to 8 hours (Including all 6 bonus tasks).
+- **Total Time:** Approximately 5 to 6 hours (Including all 6 bonus tasks).
 
 ## Setup Instructions
 
