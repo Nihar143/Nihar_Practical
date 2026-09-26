@@ -1,0 +1,100 @@
+//
+//  SceneDelegate.swift
+//  Nihar_Practical
+//
+//  Created by Nihar Dudhat on 26/09/26.
+//
+
+import UIKit
+
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+
+    var window: UIWindow?
+
+
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        
+        // Force initialization of LanguageManager BEFORE any UI is created
+        // so that UIView.appearance() is applied to the root window and navigation controllers.
+        _ = LanguageManager.shared
+        
+        if let window = windowScene.windows.first {
+            self.window = window
+            recreateRootViewController()
+        }
+    }
+    
+    func recreateRootViewController() {
+        guard let window = self.window else { return }
+        
+        // Ensure window itself adopts the correct semantic direction
+        let isArabic = LanguageManager.shared.currentLanguage == "arabic"
+        window.semanticContentAttribute = isArabic ? .forceRightToLeft : .forceLeftToRight
+        
+        // Force Light Mode globally
+        window.overrideUserInterfaceStyle = .light
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        // Tab 1: Home
+        let homeVC = storyboard.instantiateInitialViewController()!
+        let homeNav = UINavigationController(rootViewController: homeVC)
+        homeNav.tabBarItem = UITabBarItem(
+            title: LanguageManager.shared.getStaticString(for: "Home"),
+            image: UIImage(systemName: "house"),
+            tag: 0
+        )
+        
+        // Tab 2: Favorites
+        let favoritesVC = storyboard.instantiateViewController(withIdentifier: "CategoryListViewController") as! CategoryListViewController
+        favoritesVC.categoryTitle = LanguageManager.shared.getStaticString(for: "Favorites")
+        favoritesVC.viewModel = CategoryListViewModel(mode: .favorites)
+        let favoritesNav = UINavigationController(rootViewController: favoritesVC)
+        favoritesNav.tabBarItem = UITabBarItem(
+            title: LanguageManager.shared.getStaticString(for: "Favorites"),
+            image: UIImage(systemName: "heart.fill"),
+            tag: 1
+        )
+        
+        // Tab Bar setup
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [homeNav, favoritesNav]
+        tabBarController.tabBar.tintColor = .systemPink
+        
+        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: {
+            window.rootViewController = tabBarController
+        }, completion: nil)
+    }
+
+    func sceneDidDisconnect(_ scene: UIScene) {
+        // Called as the scene is being released by the system.
+        // This occurs shortly after the scene enters the background, or when its session is discarded.
+        // Release any resources associated with this scene that can be re-created the next time the scene connects.
+        // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
+    }
+
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        // Called when the scene has moved from an inactive state to an active state.
+        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+    }
+
+    func sceneWillResignActive(_ scene: UIScene) {
+        // Called when the scene will move from an active state to an inactive state.
+        // This may occur due to temporary interruptions (ex. an incoming phone call).
+    }
+
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        // Called as the scene transitions from the background to the foreground.
+        // Use this method to undo the changes made on entering the background.
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        // Called as the scene transitions from the foreground to the background.
+        // Use this method to save data, release shared resources, and store enough scene-specific state information
+        // to restore the scene back to its current state.
+    }
+
+
+}
+
